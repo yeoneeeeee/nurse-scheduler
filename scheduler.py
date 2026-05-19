@@ -1,3 +1,4 @@
+import sys
 from openpyxl import load_workbook
 from openpyxl.styles import PatternFill, Font, Alignment
 from collections import defaultdict
@@ -425,12 +426,7 @@ for name in nurses:
             vertical="center"
         )
 
-# =========================
-# 저장
-# =========================
-wb.save(OUTPUT_FILE)
 
-print(f"✅ 저장 완료: {OUTPUT_FILE}")
 
 # =========================
 # 검증
@@ -457,6 +453,20 @@ for day_idx in range(TOTAL_DAYS):
             violations.append(
                 f"{day_idx+1}일 {sh}: {cnt[sh]} / 필요 {req[sh]}"
             )
+
+# =========================
+# 저장
+# =========================
+if violations:
+    print("❌ 조건 위반 발견. 파일 저장 안 함.")
+    for v in violations:
+        print(v)
+    sys.exit(1)
+
+else:
+    wb.save(OUTPUT_FILE)
+    print(f"✅ 모든 조건 만족. 저장 완료: {OUTPUT_FILE}")
+    sys.exit(0)
 
 print()
 
