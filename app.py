@@ -11,19 +11,29 @@ def home():
 
 @app.route("/generate", methods=["POST"])
 def generate():
-    if "file" not in request.files:
-        return "파일이 업로드되지 않았습니다.", 400
+    success = False
+    last_error = ""
+     
+    for i in range(100):
+        result = subprocess.run(
+            [sys.executable, "scheduler.py"],
+            capture_output = True
+            text = True
+        )
 
-    file = request.files["file"]
+        if result.returncode == 0:
+            sucess = True
+            break
 
-    # scheduler.py가 읽는 이름으로 저장
-    file.save("template.xlsx")
-
-    # scheduler.py 실행
-    result = subprocess.run(
-        [sys.executable, "scheduler.py"],
-        text=True
-    )
+        last_error = result.stdout + "\n" + result.stderr
+    
+    if not success:
+        return f"""
+        <h2>조건 만족 근무표 생성 실패</h2>
+        <p>100번 시도했지만 조건을 만족하는 표를 만들지 못했습니다.</p>
+        <pre>{last_error}</pre>
+        """, 500
+    
 
     if result.returncode != 0:
         return f"""
