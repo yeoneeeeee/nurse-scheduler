@@ -26,6 +26,8 @@ def generate():
     # 조건 만족할 때까지 최대 100번 시도
     for i in range(100):
 
+        print(f"\n {i+1}번째 스케줄 생성 시도 중...")
+
         result = subprocess.run(
             [sys.executable, "scheduler.py"],
             capture_output=True,
@@ -33,8 +35,15 @@ def generate():
         )
 
         if result.returncode == 0:
+            print("모든 조건 만족 스케줄 생성 성공")
+            print(result.stdout)
             success = True
             break
+
+        else:
+            print("조건 불만족-> 자동 재생성")
+            print(result.stdout)
+            print(result.stderr)
 
         last_error = result.stdout + "\n" + result.stderr
 
