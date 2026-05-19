@@ -22,7 +22,6 @@ def generate():
     # scheduler.py 실행
     result = subprocess.run(
         [sys.executable, "scheduler.py"],
-        capture_output=True,
         text=True
     )
 
