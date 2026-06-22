@@ -209,8 +209,9 @@ def can_assign(name, day_idx, shift):
     if (p1, shift) in FORBIDDEN_NEXT:
         return False
 
-    if shift == "N" and p1 == "N" and p2 == "N":
-        return False
+    if shift == "N":
+        if p1 == "N" and p2 == "N":
+            return False
 
     if shift != "Off" and work_streak_at(name, day_idx) >= 5:
         return False
